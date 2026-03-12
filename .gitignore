@@ -1,0 +1,37 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Окружение
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Сборка и дистрибутив
+dist/
+build/
+out/
+
+# Логи
+*.log
+logs/
+*.log.*
+log/
+
+# Редакторы и ОС
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Тесты и кэш
+coverage/
+.nyc_output/
+jest-cache/

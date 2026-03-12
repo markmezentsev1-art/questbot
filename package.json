@@ -1,0 +1,29 @@
+{
+  "name": "questbot-",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch src/index.js",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
+  },
+  "imports": {
+    "#utils/*": "./src/utils/*.js",
+    "#services/*": "./src/services/*.js",
+    "#repositories/*": "./src/repositories/*.js",
+    "#config/*": "./src/config/*.js",
+    "#db/*": "./src/db/*.js",
+    "#bot/*": "./src/bot/*.js",
+    "#commands/*": "./src/commands/*.js"
+  }
+}

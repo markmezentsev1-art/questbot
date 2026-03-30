@@ -1,4 +1,3 @@
-// src/bot/callbacks/class.callback.js
 import { createPlayer } from "#repositories/player.repository"; // твой репозиторий
 
 export async function classCallback(ctx) {

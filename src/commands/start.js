@@ -1,7 +1,3 @@
-/// src/bot/commands/start.js
-// src/bot/commands/start.js
-import { createPlayer } from "#repositories/player.repository"; // предполагаю, что это твой метод создания
-
 export default async (ctx) => {
   const telegramId = ctx.from.id;
   const firstName = ctx.from.first_name || "Без имени";

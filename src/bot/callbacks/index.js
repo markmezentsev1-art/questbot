@@ -1,4 +1,4 @@
-// src/bot/callbacks/index.js
+/// src/bot/callbacks/index.js
 import { classCallback } from "./class.callback.js";
 // import { battleCallback } from "./battle.callback.js";
 // import { inventoryCallback } from "./inventory.callback.js";

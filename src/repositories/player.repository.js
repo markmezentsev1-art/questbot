@@ -17,3 +17,9 @@ export const findByTelegramId = async (telegramId) => {
     include: { inventory: true }, // если нужно сразу с инвентарём
   });
 };
+export const updatePlayer = async (id, data) => {
+  return prisma.player.update({
+    where: { id },
+    data,
+  });
+};

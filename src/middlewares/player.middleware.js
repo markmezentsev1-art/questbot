@@ -28,6 +28,7 @@ export const playerGuard = async (ctx, next) => {
       // Герой найден — сохраняем в контекст
       ctx.state.player = player;
       logger.debug(`Игрок ${telegramId} (${player.name}) загружен`);
+      console.log(ctx.session);
     }
 
     return next(); // продолжаем выполнение команды

@@ -3,7 +3,6 @@ import { classCallback } from "./class.callback.js";
 // import { battleCallback } from "./battle.callback.js";
 // import { inventoryCallback } from "./inventory.callback.js";
 
-// Конфиг — массив правил
 const callbackHandlers = [
   { prefix: "class_", handler: classCallback },
   // { prefix: "battle_", handler: battleCallback },

@@ -32,7 +32,7 @@ export const requestLogger = async (ctx, next) => {
     };
   }
 
-  logger.debug("Incoming update", logData);
+  console.log("Incoming update", logData);
 
   try {
     await next();

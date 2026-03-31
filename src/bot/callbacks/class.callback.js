@@ -1,8 +1,6 @@
-import { createPlayer } from "#repositories/player.repository"; // твой репозиторий
-
+import { updatePlayer } from "#repositories/player.repository"; // твой репозиторий
 export async function classCallback(ctx) {
   const data = ctx.callbackQuery.data;
-  const telegramId = ctx.from.id;
 
   // class_warrior → warrior
   const className = data.replace("class_", "");
@@ -13,11 +11,13 @@ export async function classCallback(ctx) {
     await ctx.answerCbQuery("Неверный класс", { show_alert: true });
     return;
   }
-
   // сохраняем выбор в сессию
+
   ctx.session = ctx.session || {};
   ctx.session.creatingHero = { class: className };
-
+  await updatePlayer(ctx.state.player.id, {
+    class: className,
+  });
   await ctx.answerCbQuery();
 
   await ctx.editMessageText(
@@ -28,4 +28,13 @@ export async function classCallback(ctx) {
 
   // Дальше ждём текстовое сообщение с именем
   // (об этом ниже — в bot/index.js)
+}
+// Добавь в конец файла эту функцию:
+function getClassRussianName(classKey) {
+  const map = {
+    warrior: "Воин 🛡️",
+    mage: "Маг ✨",
+    rogue: "Разбойник 🗡️",
+  };
+  return map[classKey] || classKey;
 }

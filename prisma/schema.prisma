@@ -4,8 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js" 
-
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -14,43 +13,61 @@ datasource db {
 }
 
 model Player {
-  id        String   @id @default(uuid())
+  id         String   @id @default(uuid())
   telegramId BigInt   @unique @map("telegram_id")
-  name      String?
-  class     String?  // "Warrior" | "Mage" | "Rogue"
-  level     Int      @default(1)
-  exp       Int      @default(0)
-  hp        Int      @default(100)
-  maxHp     Int      @default(100)
-  attack    Int      @default(10)
-  defense   Int      @default(5)
-  gold      Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  name       String?
+  class      String? // "Warrior" | "Mage" | "Rogue"
+  level      Int      @default(1)
+  exp        Int      @default(0)
+  hp         Int      @default(100)
+  maxHp      Int      @default(100)
+  attack     Int      @default(10)
+  defense    Int      @default(5)
+  gold       Int      @default(50)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   inventory InventoryItem[]
   quests    Quest[]
 }
 
 model InventoryItem {
-  id        String   @id @default(uuid())
-  playerId  String
-  itemName  String
-  itemType  String   // "Weapon", "Armor", "Potion", "Artifact"
-  quantity  Int      @default(1)
-  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  id       String @id @default(uuid())
+  playerId String
+  itemName String
+  itemType String // "Weapon", "Armor", "Potion", "Artifact"
+  quantity Int    @default(1)
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@map("inventory")
 }
 
 model Quest {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   playerId    String
   title       String
   description String
-  reward      String   // JSON или текст
-  status      String   @default("active") // "active", "completed", "failed"
-  player      Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  reward      String // JSON или текст
+  status      String @default("active") // "active", "completed", "failed"
+  player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@map("quests")
+}
+
+model Item {
+  id          String  @id @default(uuid())
+  name        String  @unique // уникальное название предмета
+  type        String // Weapon, Armor, Potion, Artifact и т.д.
+  description String? // описание предмета
+  rarity      String  @default("Common") // Common, Uncommon, Rare, Epic, Legendary
+  value       Int     @default(0) // цена в золоте
+  attack      Int     @default(0) // бонус к атаке
+  defense     Int     @default(0) // бонус к защите
+  hp          Int     @default(0) // бонус к здоровью
+  effect      String? // специальный эффект (например: "heal_30")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("items")
 }

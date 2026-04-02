@@ -6,9 +6,10 @@ import { requestLogger } from "../middlewares/logger.middleware.js";
 import { errorHandler } from "../middlewares/error.middleware.js";
 import { playerGuard } from "../middlewares/player.middleware.js";
 import startCommand from "../commands/start.js";
-import { handleCallbackQuery } from "./callbacks/index.js"; // ← импортируем роутер для callback_query
-
-// Создаём экземпляр
+import { handleCallbackQuery } from "./callbacks/index.js";
+import { dialogQuery } from "./dialogs/index.js";
+import inventoryComand from "../commands/inventory.js";
+import shopComand from "../commands/shop.js";
 export const bot = new Telegraf(env.BOT_TOKEN);
 
 // Глобальный error handler (Telegraf catch)
@@ -18,6 +19,7 @@ bot.use(session());
 bot.use(requestLogger);
 bot.use(playerGuard);
 bot.on("callback_query", handleCallbackQuery);
+// если используешь диалоги
 // Продолжение создания героя — ждём имя
 
 await bot.telegram
@@ -36,8 +38,11 @@ await bot.telegram
 
 const commandsComposer = new Composer();
 commandsComposer.command("start", startCommand);
+commandsComposer.command("inventory", inventoryComand);
+commandsComposer.command("shop", shopComand);
 bot.use(commandsComposer);
 // Базовые команды (потом вынесешь в handlers/)
+bot.on("text", dialogQuery);
 bot.start((ctx) => {
   ctx.reply("Привет! Добро пожаловать в игру 🚀\n\nИспользуй меню или /help");
 });

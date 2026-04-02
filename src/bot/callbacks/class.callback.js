@@ -14,7 +14,8 @@ export async function classCallback(ctx) {
   // сохраняем выбор в сессию
 
   ctx.session = ctx.session || {};
-  ctx.session.creatingHero = { class: className };
+  ctx.session.creatingHero = { class: className, step: "name" };
+
   await updatePlayer(ctx.state.player.id, {
     class: className,
   });

@@ -34,10 +34,11 @@ model Player {
 model InventoryItem {
   id       String @id @default(uuid())
   playerId String
-  itemName String
-  itemType String // "Weapon", "Armor", "Potion", "Artifact"
+  itemId   String
   quantity Int    @default(1)
-  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  item   Item   @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@map("inventory")
 }
@@ -66,8 +67,9 @@ model Item {
   hp          Int     @default(0) // бонус к здоровью
   effect      String? // специальный эффект (например: "heal_30")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  InventoryItem InventoryItem[]
 
   @@map("items")
 }

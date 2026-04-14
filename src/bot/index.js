@@ -11,6 +11,7 @@ import { dialogQuery } from "./dialogs/index.js";
 import inventoryComand from "../commands/inventory.js";
 import shopComand from "../commands/shop.js";
 import buyComand from "../commands/buy.js";
+import questComand from "../commands/quest.js";
 export const bot = new Telegraf(env.BOT_TOKEN);
 
 // Глобальный error handler (Telegraf catch)
@@ -43,6 +44,7 @@ commandsComposer.command("start", startCommand);
 commandsComposer.command("inventory", inventoryComand);
 commandsComposer.command("shop", shopComand);
 commandsComposer.command("buy", buyComand);
+commandsComposer.command("quest", questComand);
 bot.use(commandsComposer);
 // Базовые команды (потом вынесешь в handlers/)
 bot.on("text", dialogQuery);

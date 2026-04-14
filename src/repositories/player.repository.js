@@ -14,7 +14,7 @@ export const findById = async (id) => {
 export const findByTelegramId = async (telegramId) => {
   return prisma.player.findUnique({
     where: { telegramId: BigInt(telegramId) },
-    include: { inventory: true }, // если нужно сразу с инвентарём
+    include: { inventory: true, quests: true }, // если нужно сразу с инвентарём
   });
 };
 // data - объект с полями для обновления, например: { name: "Новое имя", class: "Воин" }

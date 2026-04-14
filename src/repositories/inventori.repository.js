@@ -14,3 +14,15 @@ export const getPlayerInventory = async (playerId) => {
     },
   });
 };
+export const findInventoryItem = async (playerId, itemId) => {
+  console.log("findInventoryItem", { playerId, itemId });
+  return await prisma.inventoryItem.findFirst({
+    where: { playerId, itemId },
+  });
+};
+export const updateInventoryItem = async (id, data) => {
+  return prisma.inventoryItem.update({
+    where: { id },
+    data,
+  });
+};

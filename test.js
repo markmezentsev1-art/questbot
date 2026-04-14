@@ -1,13 +1,16 @@
-const items = {
-  "Iron Sword": [
-    {
-      name: "Iron Sword",
-      price: 60,
-      description: "меч из железа",
-      level: 2,
-      effect: "+5 атаки",
-    },
-  ],
-};
+import "dotenv/config";
+import { playerGuard } from "src/middlewares/player.middleware";
 
-console.log(items["Iron Sword"]);
+const ctx = { state: [] };
+
+name.history = [{ masage: "hello", role: "user" }];
+
+//name.history = [{ mesage: "word" }];
+
+name.history.push({ masage: "buy" });
+console.log(name.history);
+
+// function check (ctx) {
+//     c
+
+// }

@@ -1,16 +1,12 @@
 import "dotenv/config";
-import { playerGuard } from "src/middlewares/player.middleware";
+const person = { firstName: "Mаrk", lastName: "Mezentsev" };
+function password(person) {
+  console.log(`твоя фамилия ${person.lastName} и имя ${person.firstName}`);
+}
+const chec = password(person);
 
-const ctx = { state: [] };
+// напиши функцию которая будет принамать параметром обьек
+//const person = {firstName: "Mаrk", lastName: "Mezentsev"}
+// и вернуть должна строку 'твоя фамилия Mezentsev и имя Mark'
 
-name.history = [{ masage: "hello", role: "user" }];
-
-//name.history = [{ mesage: "word" }];
-
-name.history.push({ masage: "buy" });
-console.log(name.history);
-
-// function check (ctx) {
-//     c
-
-// }
+const inventoryItems = [{ itemId: "111" }, { itemId: "222" }]; //'111,222'

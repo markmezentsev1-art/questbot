@@ -26,3 +26,9 @@ export const updateInventoryItem = async (id, data) => {
     data,
   });
 };
+export const updateInventoryItembyitemid = async (itemId, playerId, data) => {
+  return prisma.inventoryItem.updateMany({
+    where: { itemId, playerId },
+    data,
+  });
+};

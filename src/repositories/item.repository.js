@@ -31,3 +31,11 @@ export const findItemById = async (id) => {
     where: { id },
   });
 };
+
+export const findManyItems = async (itemIds) => {
+  return await prisma.item.findMany({
+    where: {
+      id: { in: itemIds },
+    },
+  });
+};

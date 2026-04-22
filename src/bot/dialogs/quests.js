@@ -1,10 +1,13 @@
 import { sendMessageToAI } from "../../lib/openai.js";
 import { updatePlayer } from "#repositories/player.repository";
+import {
+  createMessage,
+  getMessages,
+} from "#repositories/quest.messege.repository";
 
 import { updateInventoryItembyitemid } from "#repositories/inventori.repository";
 import { messageGame } from "../../lib/message.game.js";
 import { findManyItems } from "#repositories/item.repository";
-const history = [];
 /**
  * Обработчик диалога с NPC по активному квесту
  * Использует ИИ для генерации ответов в стиле RPG
@@ -13,6 +16,7 @@ const history = [];
 export async function questDialog(ctx) {
   try {
     const player = ctx.state.player;
+    const playerId = player.id;
 
     // Проверяем, есть ли у игрока активный квест
     if (!player?.quests || player.quests.length === 0) {
@@ -24,10 +28,15 @@ export async function questDialog(ctx) {
     const userMessage = ctx.message.text.trim();
 
     // Добавляем сообщение пользователя в историю
-    history.push({
+    await createMessage({
+      playerId,
+      questId: quest.id,
       role: "user",
       content: userMessage,
     });
+
+    const getHistory = await getMessages(playerId, quest.id);
+
     const itemIds = player.inventory.map((i) => i.itemId);
 
     // const item = await findItemById(player.inventory[0].itemId);
@@ -38,16 +47,19 @@ export async function questDialog(ctx) {
 
     const systemPrompt = messageGame(player, item, quest);
 
-    // Отправляем запрос к ИИ
-
-    console.log(systemPrompt);
-    const aiResponse = await sendMessageToAI(systemPrompt, history);
-    console.log(aiResponse);
-    const result = JSON.parse(aiResponse);
-    if (result.hpChange !== 0) {
+    const aiResponse = await sendMessageToAI(systemPrompt, getHistory);
+    let result = aiResponse;
+    console.log("AIResponse==", aiResponse);
+    try {
+      result = JSON.parse(aiResponse);
+    } catch {}
+    console.log("hpchange", result.hpChange);
+    if (result.hpChange && result.hpChange !== 0) {
       const carenthp = player.hp + result.hpChange;
-      console.log(result);
-      await updatePlayer(player.id, { hp: carenthp });
+      console.log("result", result);
+
+      console.log("player", player.hp);
+      await updatePlayer(playerId, { hp: carenthp });
     }
     if (result.removeItemQuantity !== 0) {
       const inventoryItem = player.inventory.find(
@@ -56,20 +68,18 @@ export async function questDialog(ctx) {
 
       const carentitems = inventoryItem.quantity - result.removeItemQuantity;
 
-      await updateInventoryItembyitemid(result.usedItemId, player.id, {
+      await updateInventoryItembyitemid(result.usedItemId, playerId, {
         quantity: carentitems,
       });
     }
     // Отправляем ответ игроку
     await ctx.reply(result.narrative);
-
-    // Сохраняем ответ ИИ в историю
-    history.push({
+    await createMessage({
+      playerId: playerId,
+      questId: quest.id,
       role: "assistant",
-      content: aiResponse,
+      content: result.narrative,
     });
-
-    console.log("last CTX", history);
   } catch (error) {
     console.error("Ошибка в диалоге квеста:", error);
     await ctx.reply("Произошла ошибка при разговоре с NPC. Попробуй позже.");

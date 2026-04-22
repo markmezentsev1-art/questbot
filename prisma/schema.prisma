@@ -29,6 +29,7 @@ model Player {
 
   inventory InventoryItem[]
   quests    Quest[]
+  questMessages QuestMessage[]
 }
 
 model InventoryItem {
@@ -53,6 +54,7 @@ model Quest {
   player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
   @@map("quests")
+  messages QuestMessage[]
 }
 
 model Item {
@@ -72,4 +74,26 @@ model Item {
   InventoryItem InventoryItem[]
 
   @@map("items")
+}
+
+model QuestMessage {
+  id        String      @id @default(uuid())
+  playerId  String
+  questId   String
+  role      MessageRole
+  content   String
+  meta      Json?
+  createdAt DateTime    @default(now())
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  quest  Quest  @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@index([playerId, questId, createdAt])
+  @@map("quest_messages")
+}
+
+enum MessageRole {
+  user
+  assistant
+  system
 }

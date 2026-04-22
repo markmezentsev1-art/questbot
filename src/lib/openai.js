@@ -8,13 +8,12 @@ const openai = new OpenAI({
 
 async function sendMessageToAI(systemPrompt, messages) {
   try {
-    console.log("messages", messages);
     const context = [{ role: "system", content: systemPrompt }, ...messages];
-
+    console.log("context", context);
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: context,
-      max_tokens: 550,
+      max_tokens: 10000,
       temperature: 0.78,
       top_p: 0.92,
     });

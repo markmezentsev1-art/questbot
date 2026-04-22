@@ -37,5 +37,15 @@ export const findManyItems = async (itemIds) => {
     where: {
       id: { in: itemIds },
     },
+    select: {
+      id: true,
+      name: true,
+      type: true,
+      description: true,
+      attack: true,
+      defense: true,
+      hp: true,
+      effect: true,
+    },
   });
 };

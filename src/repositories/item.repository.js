@@ -4,14 +4,28 @@ import { prisma } from "../db/index.js";
 /**
  * Получить все предметы для магазина
  */
-export const getShopItems = async () => {
-  return prisma.item.findMany({
-    orderBy: [
-      { rarity: "desc" }, // сначала легендарные и эпические
-      { value: "asc" }, // потом по возрастанию цены
-    ],
-    take: 15, // ограничиваем количество
-  });
+export const getShopItems = async (page = 1, limit = 15) => {
+  const safePage = Math.max(1, Number(page) || 1);
+  const skip = (safePage - 1) * limit;
+
+  const [items, total] = await Promise.all([
+    prisma.item.findMany({
+      orderBy: [{ rarity: "desc" }, { value: "asc" }],
+      skip,
+      take: limit,
+    }),
+    prisma.item.count(),
+  ]);
+
+  const totalPages = Math.ceil(total / limit);
+
+  return {
+    items,
+    page: safePage,
+    totalPages,
+    hasNext: safePage < totalPages,
+    hasPrev: safePage > 1,
+  };
 };
 
 /**

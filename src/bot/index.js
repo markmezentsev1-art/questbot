@@ -12,6 +12,7 @@ import inventoryComand from "../commands/inventory.js";
 import shopComand from "../commands/shop.js";
 import buyComand from "../commands/buy.js";
 import questComand from "../commands/quest.js";
+
 export const bot = new Telegraf(env.BOT_TOKEN);
 
 // Глобальный error handler (Telegraf catch)
@@ -28,7 +29,6 @@ await bot.telegram
   .setMyCommands([
     { command: "start", description: "Начать игру или главное меню" },
     { command: "profile", description: "Профиль и статистика" },
-    { command: "explore", description: "Исследовать мир" },
     { command: "inventory", description: "Инвентарь" },
     { command: "shop", description: "Магазин" },
     { command: "quest", description: "Квесты" },

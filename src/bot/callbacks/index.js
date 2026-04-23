@@ -1,6 +1,7 @@
 /// src/bot/callbacks/index.js
 import { classCallback } from "./class.callback.js";
 import { questCallback } from "./quest.callback.js";
+import { shopCallback } from "./shop.callback.js";
 // import { battleCallback } from "./battle.callback.js";
 // import { inventoryCallback } from "./inventory.callback.js";
 
@@ -9,6 +10,7 @@ const callbackHandlers = [
   // { prefix: "battle_", handler: battleCallback },
   // { prefix: "inventory_", handler: inventoryCallback },
   { prefix: "quest_", handler: questCallback },
+  { prefix: "shop_", handler: shopCallback },
   // и т.д. — добавляй по мере необходимости
 ];
 

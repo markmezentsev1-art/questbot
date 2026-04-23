@@ -18,7 +18,6 @@ export default async (ctx) => {
       {
         reply_markup: {
           inline_keyboard: [
-            [{ text: "Исследовать мир", callback_data: "explore" }],
             [{ text: "Посмотреть профиль", callback_data: "profile" }],
           ],
         },

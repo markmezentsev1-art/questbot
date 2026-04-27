@@ -12,7 +12,7 @@ import inventoryComand from "../commands/inventory.js";
 import shopComand from "../commands/shop.js";
 import buyComand from "../commands/buy.js";
 import questComand from "../commands/quest.js";
-
+import completeQuestCommand from "../commands/completequest.js";
 export const bot = new Telegraf(env.BOT_TOKEN);
 
 // Глобальный error handler (Telegraf catch)
@@ -34,6 +34,7 @@ await bot.telegram
     { command: "quest", description: "Квесты" },
     { command: "fight", description: "Бой / арена" },
     { command: "buy", description: "Купить предмет" },
+    { command: "completequest", description: "Завершить активный квест" },
   ])
   .catch((err) => {
     logger.warn("Не удалось установить меню команд", { error: err });
@@ -45,6 +46,7 @@ commandsComposer.command("inventory", inventoryComand);
 commandsComposer.command("shop", shopComand);
 commandsComposer.command("buy", buyComand);
 commandsComposer.command("quest", questComand);
+commandsComposer.command("completequest", completeQuestCommand);
 bot.use(commandsComposer);
 // Базовые команды (потом вынесешь в handlers/)
 bot.on("text", dialogQuery);

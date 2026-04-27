@@ -61,7 +61,7 @@ export async function questDialog(ctx) {
       console.log("player", player.hp);
       await updatePlayer(playerId, { hp: carenthp });
     }
-    if (result.removeItemQuantity !== 0) {
+    if (result.removeItemQuantity && result.removeItemQuantity !== 0) {
       const inventoryItem = player.inventory.find(
         (i) => i.itemId === result.usedItemId,
       );
@@ -73,12 +73,12 @@ export async function questDialog(ctx) {
       });
     }
     // Отправляем ответ игроку
-    await ctx.reply(result.narrative);
+    await ctx.reply(result.narrative || result);
     await createMessage({
       playerId: playerId,
       questId: quest.id,
       role: "assistant",
-      content: result.narrative,
+      content: result.narrative || result,
     });
   } catch (error) {
     console.error("Ошибка в диалоге квеста:", error);

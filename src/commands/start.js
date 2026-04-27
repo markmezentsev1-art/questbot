@@ -18,7 +18,7 @@ export default async (ctx) => {
       {
         reply_markup: {
           inline_keyboard: [
-            [{ text: "Посмотреть профиль", callback_data: "profile" }],
+            [{ text: "Посмотреть квесты", callback_data: "quest_open" }],
           ],
         },
       },

@@ -3,6 +3,17 @@ import { getShopItems } from "#repositories/item.repository";
 
 export default async (ctx, page = 1) => {
   try {
+    const player = ctx.state.player;
+
+    const hasActiveQuest =
+      player?.quests?.some((quest) => quest.status === "active") ?? false;
+
+    if (hasActiveQuest) {
+      return ctx.reply(
+        "🛑 Во время активного квеста нельзя заходить в магазин.",
+      );
+    }
+
     const result = await getShopItems(page, 15);
 
     if (result.items.length === 0) {

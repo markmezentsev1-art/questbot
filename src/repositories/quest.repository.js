@@ -15,3 +15,11 @@ export const assignQuestToPlayer = async (playerId, questData) => {
     },
   });
 };
+export const completeQuestById = async (questId) => {
+  return prisma.quest.update({
+    where: { id: questId },
+    data: {
+      status: "completed",
+    },
+  });
+};

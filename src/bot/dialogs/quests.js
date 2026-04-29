@@ -1,5 +1,6 @@
-import { sendMessageToAI } from "../../lib/openai.js";
+import { sendMessageToAI, fixAIResponseToJSON } from "../../lib/openai.js";
 import { updatePlayer } from "#repositories/player.repository";
+
 import {
   createMessage,
   getMessages,
@@ -52,8 +53,14 @@ export async function questDialog(ctx) {
     console.log("AIResponse==", aiResponse);
     try {
       result = JSON.parse(aiResponse);
-    } catch {}
+    } catch (e) {
+      console.error("errror", e);
+      const fixairespons = await fixAIResponseToJSON(aiResponse);
+      result = JSON.parse(fixairespons);
+      console.log("fixairespons", result);
+    }
     console.log("hpchange", result.hpChange);
+    // старт
     if (result.hpChange && result.hpChange !== 0) {
       const carenthp = player.hp + result.hpChange;
       console.log("result", result);
@@ -61,6 +68,7 @@ export async function questDialog(ctx) {
       console.log("player", player.hp);
       await updatePlayer(playerId, { hp: carenthp });
     }
+
     if (result.removeItemQuantity && result.removeItemQuantity !== 0) {
       const inventoryItem = player.inventory.find(
         (i) => i.itemId === result.usedItemId,
@@ -72,6 +80,15 @@ export async function questDialog(ctx) {
         quantity: carentitems,
       });
     }
+    if (result.expChange && result.expChange !== 0) {
+      const carentexp = player.exp + result.expChange;
+      console.log("result", result);
+
+      console.log("player", player.p);
+      await updatePlayer(playerId, { exp: carentexp });
+    }
+    //финиш
+
     // Отправляем ответ игроку
     await ctx.reply(result.narrative || result);
     await createMessage({

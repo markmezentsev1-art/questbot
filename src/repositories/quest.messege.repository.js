@@ -18,7 +18,7 @@ export const getMessages = async (playerId, questId) => {
     orderBy: {
       createdAt: "desc",
     },
-    take: 30,
+    take: 10,
     select: {
       role: true,
       content: true,

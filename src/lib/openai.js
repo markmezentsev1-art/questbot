@@ -44,5 +44,55 @@ async function sendMessageToAI(systemPrompt, messages) {
     return "…something broke. Like everything else.";
   }
 }
+export async function fixAIResponseToJSON(badResponse) {
+  const systemPrompt = `
+Ты — JSON fixer.
 
+Тебе приходит текст, который должен быть ответом RPG-бота, но он не в JSON формате.
+
+Твоя задача:
+- Преобразовать текст в валидный JSON
+- Не придумывать новую информацию
+- Вернуть только JSON
+
+Формат строго:
+{
+  "narrative": "строка",
+  "hpChange": число,
+  "expChange": число,
+  "usedItemId": "строка или null",
+  "removeItemQuantity": число,
+  "reason": "строка"
+}
+
+Правила:
+- narrative = исходный текст
+- hpChange = 0 если в тексте нет явного урона или лечения игрока
+- expChange = 0 если опыт не был начислен
+- usedItemId = null если предмет не указан
+- removeItemQuantity = 0 если предмет не использован
+- reason = "fixed invalid json"
+
+Опыт:
+- Если в тексте сказано, что враг побеждён, уничтожен, умер, распался или больше не может сражаться, expChange должен быть больше 0.
+- Если HP врага стало 0 или меньше, expChange должен быть больше 0.
+- Если игрок победил врага, expChange не может быть 0.
+- Если враг ещё жив или боя не было, expChange = 0.
+
+Верни только JSON.
+Ответ должен начинаться с { и заканчиваться }.
+`.trim();
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: badResponse },
+    ],
+    max_tokens: 1000,
+    temperature: 0.1,
+  });
+
+  return response.choices[0]?.message?.content?.trim() || "";
+}
 export { sendMessageToAI };

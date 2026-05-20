@@ -63,6 +63,7 @@ export async function fixAIResponseToJSON(badResponse) {
   "usedItemId": "строка или null",
   "removeItemQuantity": число,
   "reason": "строка"
+  "questStatus": "строка"
 }
 
 Правила:
@@ -72,6 +73,7 @@ export async function fixAIResponseToJSON(badResponse) {
 - usedItemId = null если предмет не указан
 - removeItemQuantity = 0 если предмет не использован
 - reason = "fixed invalid json"
+- questStatus = 'completed' если компания завершена или пройдена
 
 Опыт:
 - Если в тексте сказано, что враг побеждён, уничтожен, умер, распался или больше не может сражаться, expChange должен быть больше 0.
@@ -96,3 +98,30 @@ export async function fixAIResponseToJSON(badResponse) {
   return response.choices[0]?.message?.content?.trim() || "";
 }
 export { sendMessageToAI };
+
+async function cleanHistoriToAi(messages) {
+  try {
+    const systemPrompt = `я тебе передаю историю сообщений между ботом и ироком в днд формате опиши эту историю сообщений  в несколько предложений `;
+    const context = [{ role: "system", content: systemPrompt }, ...messages];
+    console.log("context", context);
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: context,
+      max_tokens: 10000,
+      temperature: 0.78,
+      top_p: 0.92,
+    });
+    let responseText = completion.choices[0]?.message?.content?.trim() || "";
+
+    if (!responseText || responseText.length < 20) {
+      responseText =
+        "…silence. Just the echo of the same thing. Over and over.";
+    }
+
+    return responseText;
+  } catch (error) {
+    console.error("OpenAI → Rust Cohle error:", error.message);
+    return "…something broke. Like everything else.";
+  }
+}
+export { cleanHistoriToAi };

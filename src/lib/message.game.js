@@ -147,11 +147,11 @@
 
 // Ответ должен начинаться с { и заканчиваться }.`;
 // }
-export function messageGame(player, item, quest) {
+export function messageGame(player, item, quest, shorthistori) {
   return `Ты — мастер игры в текстовой RPG в стиле DnD.
 
 Квест: "${quest.title}"
-
+ 
 Игрок:
 - Имя: ${player.name}
 - Класс: ${player.class}
@@ -163,7 +163,8 @@ ${JSON.stringify(item, null, 2)}
 
 Описание квеста:
 ${quest.description}
-
+Последние события:
+ ${shorthistori}
 ТВОЯ ЗАДАЧА:
 - Отвечай только на последнее сообщение игрока.
 - Прошлые сообщения используй только как контекст.
@@ -253,6 +254,7 @@ HP ИГРОКА:
   "usedItemId": "id или null",
   "removeItemQuantity": число,
   "reason": "строка"
+  "questStatus": "строка"
 }
 
 ПРИМЕР ХОДА ИГРОКА И ВРАГА:
@@ -283,5 +285,11 @@ HP ИГРОКА:
   "usedItemId": null,
   "removeItemQuantity": 0,
   "reason": "no clear action"
+}
+  
+  Пример завершения квеста :
+  {"narrative": что то связоное с окончанием квеста например поздравления
+   "expChange": 100,
+   "questStatus": 'completed'
 }`;
 }

@@ -1,6 +1,10 @@
-import { sendMessageToAI, fixAIResponseToJSON } from "../../lib/openai.js";
+import {
+  sendMessageToAI,
+  fixAIResponseToJSON,
+  cleanHistoriToAi,
+} from "../../lib/openai.js";
 import { updatePlayer } from "#repositories/player.repository";
-
+import { updater } from "../../utils/index.js";
 import {
   createMessage,
   getMessages,
@@ -9,6 +13,7 @@ import {
 import { updateInventoryItembyitemid } from "#repositories/inventori.repository";
 import { messageGame } from "../../lib/message.game.js";
 import { findManyItems } from "#repositories/item.repository";
+
 /**
  * Обработчик диалога с NPC по активному квесту
  * Использует ИИ для генерации ответов в стиле RPG
@@ -45,10 +50,12 @@ export async function questDialog(ctx) {
     //console.log("inventory", player.inventory[0]);
     console.log("items ", itemIds);
     // Формируем системный промпт для ИИ
+    const shorthistori = await cleanHistoriToAi(getHistory);
+    const sliceHistori = getHistory.slice(-4);
+    const systemPrompt = messageGame(player, item, quest, shorthistori);
 
-    const systemPrompt = messageGame(player, item, quest);
-
-    const aiResponse = await sendMessageToAI(systemPrompt, getHistory);
+    console.log(shorthistori);
+    const aiResponse = await sendMessageToAI(systemPrompt, sliceHistori);
     let result = aiResponse;
     console.log("AIResponse==", aiResponse);
     try {
@@ -61,34 +68,34 @@ export async function questDialog(ctx) {
     }
     console.log("hpchange", result.hpChange);
     // старт
-    if (result.hpChange && result.hpChange !== 0) {
-      const carenthp = player.hp + result.hpChange;
-      console.log("result", result);
+    // if (result.hpChange && result.hpChange !== 0) {
+    //   const carenthp = player.hp + result.hpChange;
+    //   console.log("result", result);
 
-      console.log("player", player.hp);
-      await updatePlayer(playerId, { hp: carenthp });
-    }
+    //   console.log("player", player.hp);
+    //   await updatePlayer(playerId, { hp: carenthp });
+    // }
 
-    if (result.removeItemQuantity && result.removeItemQuantity !== 0) {
-      const inventoryItem = player.inventory.find(
-        (i) => i.itemId === result.usedItemId,
-      );
+    // if (result.removeItemQuantity && result.removeItemQuantity !== 0) {
+    //   const inventoryItem = player.inventory.find(
+    //     (i) => i.itemId === result.usedItemId,
+    //   );
 
-      const carentitems = inventoryItem.quantity - result.removeItemQuantity;
+    //   const carentitems = inventoryItem.quantity - result.removeItemQuantity;
 
-      await updateInventoryItembyitemid(result.usedItemId, playerId, {
-        quantity: carentitems,
-      });
-    }
-    if (result.expChange && result.expChange !== 0) {
-      const carentexp = player.exp + result.expChange;
-      console.log("result", result);
+    //   await updateInventoryItembyitemid(result.usedItemId, playerId, {
+    //     quantity: carentitems,
+    //   });
+    // }
+    // if (result.expChange && result.expChange !== 0) {
+    //   const carentexp = player.exp + result.expChange;
+    //   console.log("result", result);
 
-      console.log("player", player.p);
-      await updatePlayer(playerId, { exp: carentexp });
-    }
+    //   console.log("player", player.p);
+    //   await updatePlayer(playerId, { exp: carentexp });
+    // }
     //финиш
-
+    await updater(result, player);
     // Отправляем ответ игроку
     await ctx.reply(result.narrative || result);
     await createMessage({
